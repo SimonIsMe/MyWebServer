@@ -26,7 +26,8 @@ public class WebSocketClient implements Runnable {
             String line;
             while(true) {
                 line = this._read();
-                this._send(line);
+                this._parseRequest(line);
+//                this._send(line);
                 System.out.println(line);
             }
         } catch (IOException ex) {
@@ -37,6 +38,14 @@ public class WebSocketClient implements Runnable {
             }
             Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * A method which is using to parsing incoming json request, and
+     * calling next a specific class extending by JobToDo
+     */
+    private void _parseRequest(String line) {
+        
     }
     
     /**

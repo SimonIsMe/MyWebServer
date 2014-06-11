@@ -1,6 +1,6 @@
-package mywebsocket;
+package repositories;
 
-import java.util.LinkedList;
+import mywebsocket.*;
 
 /**
  * @author Szymon Skrzyński <skrzynski.szymon@gmail.com>

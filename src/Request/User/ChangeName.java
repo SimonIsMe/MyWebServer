@@ -3,8 +3,8 @@ package Request.User;
 import com.sun.org.apache.xerces.internal.util.FeatureState;
 import mywebsocket.JobToDo;
 import mywebsocket.ThreadQueues;
-import mywebsocket.User;
-import mywebsocket.UserRepository;
+import repositories.User;
+import repositories.UserRepository;
 
 /**
  *

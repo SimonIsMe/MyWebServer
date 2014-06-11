@@ -1,5 +1,6 @@
-package mywebsocket;
+package repositories;
 
+import mywebsocket.*;
 import java.util.ArrayList;
 
 /**
