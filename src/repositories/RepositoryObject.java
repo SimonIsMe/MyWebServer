@@ -5,9 +5,14 @@ import mywebsocket.*;
 /**
  * @author Szymon Skrzyński <skrzynski.szymon@gmail.com>
  */
-abstract class RepositoryObject {
+public abstract class RepositoryObject {
     
-    private boolean _isLocked = false;
+    protected boolean _isLocked = false;
+    
+    public boolean isExist() {
+        //  TODO
+        return true;
+    }
     
     public void lock() {
         this._isLocked = true;

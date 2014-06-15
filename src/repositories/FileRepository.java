@@ -1,6 +1,6 @@
 package repositories;
 
-import entities.User;
+import entities.File;
 import java.util.LinkedList;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,23 +10,23 @@ import org.hibernate.cfg.Configuration;
 /**
  * @author Szymon Skrzyński <skrzynski.szymon@gmail.com>
  */
-public class UserRepository {
+public class FileRepository {
 
-    private static UserRepository _instance;
+    private static FileRepository _instance;
 
-    private LinkedList<User> _users;
+    private LinkedList<File> _users;
 
-    private UserRepository() {
-        this._users = new LinkedList<User>();
+    private FileRepository() {
+        this._users = new LinkedList<File>();
     }
 
-    public static UserRepository getInstance() {
+    public static FileRepository getInstance() {
         if (_instance == null) {
-            synchronized (UserRepository.class) {
-                UserRepository inst = _instance;
+            synchronized (FileRepository.class) {
+                FileRepository inst = _instance;
                 if (inst == null) {
-                    synchronized (UserRepository.class) {
-                        _instance = new UserRepository();
+                    synchronized (FileRepository.class) {
+                        _instance = new FileRepository();
                     }
                 }
             }
@@ -35,11 +35,11 @@ public class UserRepository {
         return _instance;
     }
 
-    public User getUser(long userId) {
+    public File getUser(long fileId) {
         SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
         Session session = sessionFactory.getCurrentSession();
         Transaction tx = session.beginTransaction();
-        User user = (User) session.get(User.class, userId);
+        File user = (File) session.get(File.class, fileId);
         tx.commit();
         return user;
     }

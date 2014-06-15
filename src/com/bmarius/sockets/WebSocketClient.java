@@ -6,9 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mywebsocket.JobToDo;
+import mywebsocket.Response;
+import mywebsocket.ResponseException;
+import mywebsocket.ThreadQueues;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  * @author Szymon Skrzyński <skrzynski.szymon@gmail.com>
@@ -21,14 +29,15 @@ public class WebSocketClient implements Runnable {
 
     public void run() {
         try {
+            
+            ThreadQueues.getInstance();
+            
             this.in = socket.getInputStream();
             this.out = socket.getOutputStream();
             String line;
             while(true) {
                 line = this._read();
                 this._parseRequest(line);
-//                this._send(line);
-                System.out.println(line);
             }
         } catch (IOException ex) {
             if (ex.getMessage().equals("Wrong opcode: 8")) {
@@ -42,10 +51,86 @@ public class WebSocketClient implements Runnable {
     
     /**
      * A method which is using to parsing incoming json request, and
-     * calling next a specific class extending by JobToDo
+     * calling a specific object extending by JobToDo class
      */
     private void _parseRequest(String line) {
         
+        System.out.println("###   " + line);
+        
+//        line = "{\"namespace\": \"Uer\", \"className\": \"ChangeName\", \"data\": {\"userId\":123, \"firstName\":\"Andrzej\"}}";
+        JSONObject obj;
+        try {
+            obj = (JSONObject) JSONValue.parse(line);
+            obj.get("namespace");
+            obj.get("className");
+        } catch (Exception ex) {
+            this._sendIncorrectJsonResponse();
+            return;
+        }
+        
+        if (obj.get("namespace") == null || obj.get("className") == null) {
+            this._sendNotFoundResponse(
+                (String) obj.get("namespace"), 
+                (String) obj.get("className")
+            );
+            return;
+        }
+        
+        String className = (String) obj.get("className");
+        String namespace = (String) obj.get("namespace");
+        
+        System.out.println("###   " + line);
+        System.out.println("Request." + namespace + "." + className);
+        
+        try {
+            Constructor classObject = 
+                    Class.forName("Request." + namespace + "." + className)
+                            .getConstructor(WebSocketClient.class);
+            
+            JobToDo jobToDo = (JobToDo) classObject.newInstance(this);
+            jobToDo.data = (JSONObject) ((JSONObject) obj.get("data"));
+            
+            ThreadQueues.getInstance().addJobToDo(jobToDo);
+            
+        } catch (ClassNotFoundException ex) {
+            this._sendNotFoundResponse(namespace, className);
+        } catch (InstantiationException ex) {
+            this._sendNotFoundResponse(namespace, className);
+        } catch (IllegalAccessException ex) {
+            this._sendNotFoundResponse(namespace, className);
+        } catch (NoSuchMethodException ex) {
+            this._sendNotFoundResponse(namespace, className);
+        } catch (SecurityException ex) {
+            this._sendNotFoundResponse(namespace, className);
+        } catch (IllegalArgumentException ex) {
+            this._sendNotFoundResponse(namespace, className);
+        } catch (InvocationTargetException ex) {
+            this._sendNotFoundResponse(namespace, className);
+        }        
+    }
+    
+    private void _sendIncorrectJsonResponse() {
+        Response response = new Response("", "", this);
+        response.code = Response.CODE_ERROR;
+        response.data = "{\"text\":\"Incorrect JSON text.\"}";
+        try {
+            response.send();
+        } catch (ResponseException ex) {
+            Logger.getLogger(WebSocketClient.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void _sendNotFoundResponse(String namespace, String className) {
+        Response response = new Response(namespace, className, this);
+        response.code = Response.CODE_NOT_FOUND;
+        response.data = "{\"text\":\"Not found\"}";
+        try {
+            response.send();
+        } catch (ResponseException ex) {
+            Logger.getLogger(WebSocketClient.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
     }
     
     /**
@@ -53,7 +138,7 @@ public class WebSocketClient implements Runnable {
      * @param message to send
      * @throws java.io.IOException
      */
-    private void _send(String message) throws IOException {
+    public void send(String message) throws IOException {
         /**
          * get message bytes
          */

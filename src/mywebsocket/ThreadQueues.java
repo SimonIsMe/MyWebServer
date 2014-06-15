@@ -12,27 +12,23 @@ public class ThreadQueues {
     public static final int START_NUMBER_OF_QUEUES = 4;
     private LinkedList<ThreadQueue> _threadQueues = new LinkedList<ThreadQueue>();
     private static ThreadQueues _instance;
+    private boolean _pause = false;
     
     private ThreadQueues() {
         for (int i = 0; i < START_NUMBER_OF_QUEUES; i++) {
             
             ThreadQueue threadQueue = new ThreadQueue();
-            threadQueue.run();
+            threadQueue.pauseThread();
+            (new Thread(threadQueue)).start();
             
             this._threadQueues.add(threadQueue);
         }
     }
     
+    //  TODO: zabezpieczyć przez błędami spowodowanymi wielowątkowścią
     public static ThreadQueues getInstance() {
         if (_instance == null) {
-            synchronized (ThreadQueues.class) {
-                ThreadQueues inst = _instance;
-                if (inst == null) {
-                    synchronized (ThreadQueues.class) {
-                        _instance = new ThreadQueues();
-                    }
-                }
-            }
+            _instance = new ThreadQueues();
         }
         
         return _instance; 
@@ -50,6 +46,7 @@ public class ThreadQueues {
         }
         
         this._threadQueues.get(id).addToQueue(jobToDo);
+        this._threadQueues.get(id).resumeThread();
         
         return id;
     }

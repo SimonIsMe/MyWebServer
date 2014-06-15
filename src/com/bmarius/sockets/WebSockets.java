@@ -125,7 +125,7 @@ public class WebSockets implements Runnable{
                 System.out.println(socket);
                 WebSocketClient client = new WebSocketClient();
                 client.socket = socket;
-                client.run();
+                new Thread(client).start();
                 
                 WebSocketManageClients.clients.add(client);
             }

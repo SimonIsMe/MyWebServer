@@ -16,8 +16,8 @@ public class MyWebSocket {
         websocket.run();
         
         //  odebrałem wiadomośc, że należy zmienić userowi imię
-        ChangeName changeName = new ChangeName();     
-        ThreadQueues.getInstance().addJobToDo(changeName);
+//        ChangeName changeName = new ChangeName();     
+//        ThreadQueues.getInstance().addJobToDo(changeName);
     }
     
 }
