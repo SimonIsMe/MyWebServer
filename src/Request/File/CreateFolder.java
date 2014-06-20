@@ -21,12 +21,21 @@ public class CreateFolder extends JobToDo {
     }
     
     public void run() {
-        
+        System.out.println(this.data.toString());
     }
     
     private boolean _validateData() {
         
+        String name = (String) this.data.get("name");
+        if (name == null) {
+            return false;
+        }
+        
+        if (this.data.get("parentId") == null) {
+            return false;
+        }
+        int parentId = (int) this.data.get("parentId");
+        
         return true;
     }
 }
-

@@ -1,6 +1,7 @@
 package mywebsocket;
 
 import com.bmarius.sockets.WebSocketClient;
+import com.bmarius.sockets.WebSocketManageClients;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -36,6 +37,48 @@ public class Response {
         this.namespace = namespace;
         this.className = className;
         this.clients.add(client);
+    }
+    
+    public boolean sendToEverybodyExceptMe(WebSocketClient webSocketClient) {
+        try {
+            this.clients = (LinkedList<WebSocketClient>) WebSocketManageClients.clients.clone();
+            this.clients.remove(webSocketClient);
+            return this.send();
+        } catch (ResponseException ex) {
+            Logger.getLogger(Response.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean sendOnlyMe(WebSocketClient webSocketClient) {
+        try {
+            this.clients.add(webSocketClient);
+            return this.send();
+        } catch (ResponseException ex) {
+            Logger.getLogger(Response.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean sendToAll() {
+        try {
+            this.clients = WebSocketManageClients.clients;
+            return this.send();
+        } catch (ResponseException ex) {
+            Logger.getLogger(Response.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean send(LinkedList<Integer> userIds) {
+        try {
+            this.clients
+                    = WebSocketManageClients.getWebSocketClientsByUserId(userIds);
+            return this.send();
+        } catch (ResponseException ex) {
+            Logger.getLogger(Response.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public boolean send() throws ResponseException {

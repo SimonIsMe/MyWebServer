@@ -13,6 +13,7 @@
     
     <mapping class="entities.User"/>
     <mapping class="entities.File"/>
+    <mapping class="entities.Session"/>
     
   </session-factory>
 </hibernate-configuration>

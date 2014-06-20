@@ -40,7 +40,7 @@ public class WebSockets implements Runnable{
                 //get input channel
                 InputStream in = socket.getInputStream();
 
-                BufferedReader br = new BufferedReader( new InputStreamReader(in));
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 String line;
                 String key = null;
                 String origin = "unavailable";
@@ -91,7 +91,7 @@ public class WebSockets implements Runnable{
                     socket.close();
                     throw new UnauthorizedAccess("Unauthorized Access");
                 }
-                logger.log(Level.INFO,"Server accepted connection from " + origin);
+                logger.log(Level.INFO, "Server accepted connection from " + origin);
 
 
                 /**
@@ -122,7 +122,6 @@ public class WebSockets implements Runnable{
 
                 logger.log(Level.INFO, "Handshake response sent!");
                 
-                System.out.println(socket);
                 WebSocketClient client = new WebSocketClient();
                 client.socket = socket;
                 new Thread(client).start();

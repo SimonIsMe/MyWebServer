@@ -29,7 +29,7 @@ import repositories.RepositoryObject;
 
 /**
  *
- * @author Szymon Skrzyński <skrzynski.szymon@gmail.com>
+ * @author szymon
  */
 @Entity
 @Table(name = "file")
@@ -41,7 +41,7 @@ import repositories.RepositoryObject;
     @NamedQuery(name = "File.findByMimeType", query = "SELECT f FROM File f WHERE f.mimeType = :mimeType"),
     @NamedQuery(name = "File.findByCreatedAt", query = "SELECT f FROM File f WHERE f.createdAt = :createdAt"),
     @NamedQuery(name = "File.findByUpload", query = "SELECT f FROM File f WHERE f.upload = :upload")})
-public class File extends RepositoryObject implements Serializable {
+public class File extends RepositoryObject  implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
