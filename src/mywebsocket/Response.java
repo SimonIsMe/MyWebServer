@@ -22,7 +22,8 @@ public class Response {
     public int code = CODE_OK;
     public String namespace;
     public String className;
-    public String data = "";
+    public JSONObject data = new JSONObject();
+    public Long responseId;
     public LinkedList<WebSocketClient> clients = new LinkedList<WebSocketClient>();
 
     public Response() {
@@ -37,6 +38,16 @@ public class Response {
         this.namespace = namespace;
         this.className = className;
         this.clients.add(client);
+    }
+    
+    public Response clone() {
+        Response clone = new Response();
+        clone.namespace = this.namespace;
+        clone.className = this.className;
+        clone.data = this.data;
+        clone.responseId = this.responseId;
+        clone.clients = this.clients;
+        return clone;
     }
     
     public boolean sendToEverybodyExceptMe(WebSocketClient webSocketClient) {
@@ -92,6 +103,9 @@ public class Response {
         }
         
         JSONObject response = new JSONObject();
+        if (this.responseId != null) {
+            response.put("responseId", this.responseId);
+        }
         response.put("code", this.code);
         response.put("namespace", this.namespace);
         response.put("className", this.className);

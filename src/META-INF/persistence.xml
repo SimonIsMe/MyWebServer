@@ -3,8 +3,8 @@
   <persistence-unit name="MyWebSocketPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>entities.User</class>
-    <class>entities.File</class>
     <class>entities.Session</class>
+    <class>entities.File</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/MyWebServer"/>
       <property name="javax.persistence.jdbc.user" value="postgres_root2"/>

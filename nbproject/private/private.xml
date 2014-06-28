@@ -3,11 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/szymon/workspace/MyWebSocket/src/com/bmarius/sockets/WebSocketClient.java</file>
-            <file>file:/home/szymon/workspace/MyWebSocket/src/repositories/RepositoryObject.java</file>
-            <file>file:/home/szymon/workspace/MyWebSocket/src/repositories/UserRepository.java</file>
-            <file>file:/home/szymon/workspace/MyWebSocket/src/repositories/User.java</file>
-            <file>file:/home/szymon/workspace/MyWebSocket/src/Request/User/ChangeName.java</file>
+            <file>file:/home/szymon/workspace/MyWebSocket/src/Request/File/Upload.java</file>
+            <file>file:/home/szymon/workspace/MyWebSocket/src/model/UploadFile.java</file>
+            <file>file:/home/szymon/workspace/MyWebSocket/src/mywebsocket/JobToDo.java</file>
+            <file>file:/home/szymon/workspace/MyWebSocket/src/Request/File/StartUploadFile.java</file>
+            <file>file:/home/szymon/workspace/MyWebSocket/src/com/bmarius/sockets/WebSocketManageClients.java</file>
+            <file>file:/home/szymon/workspace/MyWebSocket/src/Request/File/Remove.java</file>
         </group>
     </open-files>
 </project-private>

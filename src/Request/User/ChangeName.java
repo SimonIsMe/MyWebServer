@@ -60,7 +60,7 @@ public class ChangeName extends JobToDo {
             tx.commit();
             user.unlock();
             
-            this._response.data = this.data.toString();
+            this._response.data = this.data;
             this._sendToAllClients();
         }
     }

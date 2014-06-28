@@ -25,7 +25,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import repositories.RepositoryObject;
 
 /**
  *
@@ -40,8 +39,9 @@ import repositories.RepositoryObject;
     @NamedQuery(name = "File.findByName", query = "SELECT f FROM File f WHERE f.name = :name"),
     @NamedQuery(name = "File.findByMimeType", query = "SELECT f FROM File f WHERE f.mimeType = :mimeType"),
     @NamedQuery(name = "File.findByCreatedAt", query = "SELECT f FROM File f WHERE f.createdAt = :createdAt"),
-    @NamedQuery(name = "File.findByUpload", query = "SELECT f FROM File f WHERE f.upload = :upload")})
-public class File extends RepositoryObject  implements Serializable {
+    @NamedQuery(name = "File.findByUpload", query = "SELECT f FROM File f WHERE f.upload = :upload"),
+    @NamedQuery(name = "File.findByHashName", query = "SELECT f FROM File f WHERE f.hashName = :hashName")})
+public class File implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,14 +59,13 @@ public class File extends RepositoryObject  implements Serializable {
     private Date createdAt;
     @Column(name = "upload")
     private Short upload;
+    @Column(name = "hash_name")
+    private String hashName;
     @OneToMany(mappedBy = "parentId")
     private Collection<File> fileCollection;
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @ManyToOne
     private File parentId;
-    @JoinColumn(name = "owner_user_id", referencedColumnName = "id")
-    @ManyToOne
-    private User ownerUserId;
 
     public File() {
     }
@@ -121,6 +120,14 @@ public class File extends RepositoryObject  implements Serializable {
         this.upload = upload;
     }
 
+    public String getHashName() {
+        return hashName;
+    }
+
+    public void setHashName(String hashName) {
+        this.hashName = hashName;
+    }
+
     @XmlTransient
     public Collection<File> getFileCollection() {
         return fileCollection;
@@ -136,14 +143,6 @@ public class File extends RepositoryObject  implements Serializable {
 
     public void setParentId(File parentId) {
         this.parentId = parentId;
-    }
-
-    public User getOwnerUserId() {
-        return ownerUserId;
-    }
-
-    public void setOwnerUserId(User ownerUserId) {
-        this.ownerUserId = ownerUserId;
     }
 
     @Override

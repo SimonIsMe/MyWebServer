@@ -9,8 +9,10 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.UploadFile;
 import mywebsocket.JobToDo;
 import mywebsocket.Response;
 import mywebsocket.ResponseException;
@@ -26,6 +28,8 @@ public class WebSocketClient implements Runnable {
     public Socket socket;
     private InputStream in = null;
     private OutputStream out = null;
+    
+    public HashMap<String, UploadFile> uploadingFiles = new HashMap<String, UploadFile>();
 
     public void run() {
         try {
@@ -78,6 +82,10 @@ public class WebSocketClient implements Runnable {
         
         String className = (String) obj.get("className");
         String namespace = (String) obj.get("namespace");
+        Long requestId = null;
+        if (obj.get("requestId") != null) {
+            requestId = (Long) obj.get("requestId");
+        }
         
         System.out.println("###   " + line);
         System.out.println("Request." + namespace + "." + className);
@@ -89,6 +97,7 @@ public class WebSocketClient implements Runnable {
             
             JobToDo jobToDo = (JobToDo) classObject.newInstance(this);
             jobToDo.data = (JSONObject) ((JSONObject) obj.get("data"));
+            jobToDo.setResponseId(requestId);
             
             ThreadQueues.getInstance().addJobToDo(jobToDo);
             
@@ -112,7 +121,7 @@ public class WebSocketClient implements Runnable {
     private void _sendIncorrectJsonResponse() {
         Response response = new Response("", "", this);
         response.code = Response.CODE_ERROR;
-        response.data = "{\"text\":\"Incorrect JSON text.\"}";
+        response.data.put("text", "Incorrect JSON text.");
         try {
             response.send();
         } catch (ResponseException ex) {
@@ -124,7 +133,7 @@ public class WebSocketClient implements Runnable {
     private void _sendNotFoundResponse(String namespace, String className) {
         Response response = new Response(namespace, className, this);
         response.code = Response.CODE_NOT_FOUND;
-        response.data = "{\"text\":\"Not found\"}";
+        response.data.put("text", "Not found.");
         try {
             response.send();
         } catch (ResponseException ex) {
@@ -178,7 +187,7 @@ public class WebSocketClient implements Runnable {
         //boolean whole = (opcode & 0b10000000) !=0;
         opcode = opcode & 0xF;
 
-        if(opcode!=1)
+        if (opcode != 1)
             throw new IOException("Wrong opcode: " + opcode);
 
         int len = in.read();

@@ -39,7 +39,7 @@ public class Create extends JobToDo {
         tx.commit();
 
         this.data.put("id", userId);
-        this._response.data = this.data.toString();
+        this._response.data = this.data;
         this._sendToAllClients();
     }
 

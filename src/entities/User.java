@@ -30,11 +30,11 @@ import repositories.RepositoryObject;
 @Table(name = "`user`")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "User_1.findAll", query = "SELECT u FROM User_1 u"),
-    @NamedQuery(name = "User_1.findById", query = "SELECT u FROM User_1 u WHERE u.id = :id"),
-    @NamedQuery(name = "User_1.findByFirstname", query = "SELECT u FROM User_1 u WHERE u.firstname = :firstname"),
-    @NamedQuery(name = "User_1.findByLastname", query = "SELECT u FROM User_1 u WHERE u.lastname = :lastname"),
-    @NamedQuery(name = "User_1.findByPassword", query = "SELECT u FROM User_1 u WHERE u.password = :password")})
+    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
+    @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
+    @NamedQuery(name = "User.findByFirstname", query = "SELECT u FROM User u WHERE u.firstname = :firstname"),
+    @NamedQuery(name = "User.findByLastname", query = "SELECT u FROM User u WHERE u.lastname = :lastname"),
+    @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
 public class User extends RepositoryObject  implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -138,7 +138,7 @@ public class User extends RepositoryObject  implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.User_1[ id=" + id + " ]";
+        return "entities.User[ id=" + id + " ]";
     }
     
 }

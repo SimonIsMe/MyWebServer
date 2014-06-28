@@ -2,19 +2,17 @@ package Request.File;
 
 import com.bmarius.sockets.WebSocketClient;
 import entities.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import mywebsocket.JobToDo;
+import mywebsocket.Response;
 
 /**
  *
  * @author Szymon Skrzyński <skrzynski.szymon@gmail.com>
  */
-public class CreateFolder extends JobToDo {
+public class Rename extends JobToDo {
     
-    public CreateFolder(WebSocketClient client) {
-        super(client, "File", "CreateFolder");
+    public Rename(WebSocketClient client) {
+        super(client, "File", "Rename");
     }
     
     public void run() {
@@ -25,26 +23,21 @@ public class CreateFolder extends JobToDo {
             return;
         }
         
-        Long parentId = (Long) this.data.get("parentId");
+        Long id = (Long) this.data.get("id");
         String name = (String) this.data.get("name");
         
-        File parentFolder = (File) this._session.get(File.class, parentId);
+        File folder = (File) this._session.get(File.class, id);
         
-        File folder = new File();
         folder.setName(name);
-        folder.setParentId(parentFolder);
-        folder.setCreatedAt(new Date());
-        folder.setMimeType(null);
-        
-        Long newFolderId = (Long) this._session.save(folder);
+        this._session.save(folder);
         this._session.getTransaction().commit();
         
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        this.data.put("setCreatedAt", dateFormat.format(folder.getCreatedAt()));
-        this.data.put("id", newFolderId);
-        
         this._response.data = this.data;
-        this._sendToAllClients();
+        Response responseToAllCliens = (Response) this._response.clone();
+        this._sendOnlyToMe();
+        
+        responseToAllCliens.responseId = null;
+        responseToAllCliens.sendToAll();
     }
     
     private boolean _validateData() {
@@ -53,11 +46,11 @@ public class CreateFolder extends JobToDo {
             return false;
         }
         
-        if (this.data.get("parentId") == null) {
+        if (this.data.get("id") == null) {
             return false;
         }
         
-        Long parentId = (Long) this.data.get("parentId");
+        Long parentId = (Long) this.data.get("id");
         return this._validateFolderExist(parentId);
     }
     
@@ -65,12 +58,7 @@ public class CreateFolder extends JobToDo {
         this._session.beginTransaction();
         File folder = (File) this._session.get(File.class, folderId);
         
-        
         if (folder == null) {
-            return false;
-        }
-        
-        if (folder.getMimeType() != null) {
             return false;
         }
         

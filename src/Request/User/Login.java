@@ -29,12 +29,8 @@ public class Login extends JobToDo {
 
         String sessionId = (String) this.data.get("sessionId");
         
-        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-        Transaction tx = session.beginTransaction();
-
         entities.Session userSession = 
-            (entities.Session) session.get(entities.Session.class, sessionId);
+            (entities.Session) this._session.get(entities.Session.class, sessionId);
         
         if (userSession == null) {
             this._sendResponseInvalidData();
@@ -46,18 +42,16 @@ public class Login extends JobToDo {
             this._client
         );
 
-        tx.commit();
-
         this.data.put("userId", userSession.getUserId().getId());
         this.data.put("userFirstname", userSession.getUserId().getFirstname());
         this.data.put("userLastname", userSession.getUserId().getLastname());
         
-        this._response.data = this.data.toString();
+        this._response.data = this.data;
         this._sendToAllClientsExceptMe();
         
         Response responseToMe = new Response("User", "Login");
         this.data.put("hello", true);
-        responseToMe.data = this.data.toString();
+        responseToMe.data = this.data;
         responseToMe.sendOnlyMe(this._client);
     }
 
